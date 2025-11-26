@@ -28,12 +28,15 @@ Constraints:
 let aiClient: GoogleGenAI | null = null;
 
 export const initializeGenAI = () => {
-  if (!process.env.API_KEY) {
+  // Safe check for process.env to prevent crashes in browsers where it doesn't exist
+  const apiKey = typeof process !== 'undefined' && process.env ? process.env.API_KEY : null;
+
+  if (!apiKey) {
     console.warn("Gemini API Key is missing.");
     return null;
   }
   if (!aiClient) {
-    aiClient = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    aiClient = new GoogleGenAI({ apiKey: apiKey });
   }
   return aiClient;
 };
